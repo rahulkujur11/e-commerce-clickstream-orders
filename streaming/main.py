@@ -4,8 +4,8 @@ from pyspark.sql import SparkSession, functions as F, types as T
 KAFKA_BOOTSTRAP = "kafka:9092"  # inside Docker network
 TOPIC = "events.raw"
 
-DATA_ROOT = "/opt/data"                 # stays bind-mounted for files
-CKPT_ROOT = "/tmp/checkpoints"          # container-local for Spark state
+DATA_ROOT = "/opt/data"          # bind-mount for data
+CKPT_ROOT = "/tmp/checkpoints"   # container-local for Spark state
 
 BRONZE_PATH = f"{DATA_ROOT}/bronze/events"
 CKPT_BRONZE = f"{CKPT_ROOT}/bronze_events"
@@ -16,6 +16,7 @@ CKPT_CART = f"{CKPT_ROOT}/silver_add_to_cart"
 CKPT_ORD  = f"{CKPT_ROOT}/silver_order_placed"
 CKPT_SESS = f"{CKPT_ROOT}/silver_sessions"
 CKPT_LATE = f"{CKPT_ROOT}/silver_late"
+
 
 
 def spark():
