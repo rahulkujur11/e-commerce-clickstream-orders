@@ -5,7 +5,7 @@ A fully containerized **real-time data pipeline** that processes simulated e-com
 
 - **Apache Kafka** – event ingestion
 - **Apache Spark Structured Streaming** – real-time ETL
-- **Delta Lake** – Bronze & Silver storage layers
+- **Parquet Data Lake** – Bronze & Silver storage layers
 - **Docker Compose** – local orchestration
 
 ---
@@ -14,31 +14,31 @@ A fully containerized **real-time data pipeline** that processes simulated e-com
 
 ```mermaid
 flowchart LR
-    subgraph Generator["Event Generator"]
-        E1[JSON Clickstream Event Producer]
-    end
+  subgraph Generator["Event Generator"]
+    E1["JSON Clickstream\nEvent Producer"]
+  end
 
-    subgraph Kafka["Kafka Cluster"]
-        T1[(Topic: events.raw)]
-    end
+  subgraph Kafka["Kafka Cluster"]
+    T1[("Topic: events.raw")]
+  end
 
-    subgraph Spark["Spark Structured Streaming"]
-        S1[Ingest from Kafka]
-        S2[Bronze Writer<br>(Raw Delta)]
-        S3[Silver Writer<br>(Clean & Enriched Delta)]
-    end
+  subgraph Spark["Spark Structured Streaming"]
+    S1["Ingest from Kafka"]
+    S2["Bronze Writer\n(Raw Parquet)"]
+    S3["Silver Writer\n(Clean & Enriched Parquet)"]
+  end
 
-    subgraph DeltaLake["Delta Lake Storage"]
-        B[Bronze Tables]
-        Si[Silver Tables]
-    end
+  subgraph Storage["Data Lake on Disk"]
+    B["Bronze Tables"]
+    Si["Silver Tables"]
+  end
 
-    E1 --> T1
-    T1 --> S1
-    S1 --> S2
-    S1 --> S3
-    S2 --> B
-    S3 --> Si
+  E1 --> T1
+  T1 --> S1
+  S1 --> S2
+  S1 --> S3
+  S2 --> B
+  S3 --> Si
 ```
 
 ---
@@ -47,7 +47,7 @@ flowchart LR
 
 | Layer  | Description |
 |--------|-------------|
-| **Bronze** | Raw, unmodified Kafka events stored as-is in Delta format |
+| **Bronze** | Raw, unmodified Kafka events stored as-is in Parquet format |
 | **Silver** | Cleaned, parsed, and enriched datasets ready for analytics |
 
 ---
