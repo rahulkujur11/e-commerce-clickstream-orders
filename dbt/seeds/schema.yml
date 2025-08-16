@@ -1,0 +1,10 @@
+version: 2
+seeds:
+  - name: dim_sku
+    description: Static SKU dimension (category lookup)
+    columns:
+      - name: sku
+        tests:
+          - not_null
+          - unique
+      - name: category

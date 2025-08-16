@@ -1,0 +1,13 @@
+
+    
+    
+    
+    create table "warehouse"."main_main"."dim_user_1" (user_id text,user_tier text)
+  ;
+    -- dbt seed --
+    
+          COPY "warehouse"."main_main"."dim_user_1" FROM '/usr/app/seeds/dim_user_1.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

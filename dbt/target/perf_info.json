@@ -1,0 +1,56 @@
+{
+    "path_count": 138,
+    "parsed_path_count": 138,
+    "static_analysis_path_count": 14,
+    "static_analysis_parsed_path_count": 14,
+    "is_partial_parse_enabled": true,
+    "is_static_analysis_enabled": true,
+    "read_files_elapsed": 0.22604395799862687,
+    "load_macros_elapsed": 0.4280777950043557,
+    "parse_project_elapsed": 0.5109758839971619,
+    "patch_sources_elapsed": 0.015190851998340804,
+    "process_manifest_elapsed": 0.01899825299915392,
+    "load_all_elapsed": 1.275906495997333,
+    "projects": [
+        {
+            "project_name": "ecomm",
+            "elapsed": 0.5040005300033954,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.21277761900273617,
+                    "parsed_path_count": 14
+                },
+                {
+                    "parser": "seed",
+                    "elapsed": 0.09832154600007925,
+                    "parsed_path_count": 2
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.18745410299743526,
+                    "parsed_path_count": 3
+                }
+            ],
+            "parsed_path_count": 19
+        },
+        {
+            "project_name": "dbt_duckdb",
+            "elapsed": 0.003970543002651539,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt",
+            "elapsed": 0.0028688210004474968,
+            "parsers": [
+                {
+                    "parser": "doc",
+                    "elapsed": 0.00016047900135163218,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 1
+        }
+    ]
+}

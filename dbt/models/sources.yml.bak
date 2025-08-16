@@ -1,0 +1,62 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: main
+    tables:
+      - name: page_view
+        meta:
+          duckdb:
+            external_location: "read_parquet('/opt/data/silver/page_view/*/*.parquet')"
+      - name: add_to_cart
+        meta:
+          duckdb:
+            external_location: "read_parquet('/opt/data/silver/add_to_cart/*/*.parquet')"
+      - name: order_placed
+        meta:
+          duckdb:
+            external_location: "read_parquet('/opt/data/silver/order_placed/*/*.parquet')"
+      - name: sessions
+        meta:
+          duckdb:
+            external_location: "read_parquet('/opt/data/silver/sessions/*/*.parquet')"
+
+models:
+  - name: fct_sessions
+    description: "Session-level fact table derived from silver.sessions."
+    columns:
+      - name: session_id
+        tests: [not_null, unique]
+      - name: user_id
+        tests: [not_null]
+      - name: session_start
+      - name: session_end
+      - name: session_duration_seconds
+      - name: page_count
+      - name: cart_events
+      - name: conversion_flag
+  - name: fct_order_items
+    description: "One row per line item in an order; exploded from silver.order_placed."
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: sku
+        tests: [not_null]
+      - name: qty
+      - name: price
+      - name: line_total
+  - name: daily_funnel
+    description: "Daily funnel metrics from sessions and orders."
+    columns:
+      - name: date
+        tests: [not_null, unique]
+  - name: dim_user
+    description: "User dimension with activity and revenue rollups."
+    columns:
+      - name: user_id
+        tests: [not_null, unique]
+  - name: dim_sku
+    description: "SKU dimension derived from observed sales."
+    columns:
+      - name: sku
+        tests: [not_null, unique]

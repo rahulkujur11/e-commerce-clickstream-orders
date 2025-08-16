@@ -1,0 +1,19 @@
+name: "ecomm"
+version: "1.0"
+config-version: 2
+
+profile: "ecomm"
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]     # <-- important
+test-paths:  ["tests"]
+macro-paths: ["macros"]
+
+models:
+  ecomm:
+    +schema: main
+
+seeds:
+  ecomm:
+    +schema: main
+    +quote_columns: false

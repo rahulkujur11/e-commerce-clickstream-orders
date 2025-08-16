@@ -1,0 +1,20 @@
+version: 2
+sources:
+  - name: silver
+    tables:
+      - name: order_placed
+        external:
+          location: "/opt/data/silver/order_placed/*/*.parquet"
+          file_format: parquet
+      - name: page_view
+        external:
+          location: "/opt/data/silver/page_view/*/*.parquet"
+          file_format: parquet
+      - name: add_to_cart
+        external:
+          location: "/opt/data/silver/add_to_cart/*/*.parquet"
+          file_format: parquet
+      - name: sessions
+        external:
+          location: "/opt/data/silver/sessions/*/*.parquet"
+          file_format: parquet

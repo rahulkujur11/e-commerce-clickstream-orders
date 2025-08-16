@@ -1,0 +1,11 @@
+
+    
+    
+    truncate table "warehouse"."main_main"."dim_sku";
+    -- dbt seed --
+    
+          COPY "warehouse"."main_main"."dim_sku" FROM '/usr/app/seeds/dim_sku.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

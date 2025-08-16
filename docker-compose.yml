@@ -1,4 +1,4 @@
-# docker-compose.yml — Windows-friendly, zero-drama Kafka + Spark + Superset
+# docker-compose.yml — Kafka + Spark + dbt (DuckDB) + Superset
 
 services:
   zookeeper:
@@ -7,78 +7,68 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
       - "2181:2181"
-    networks:
-      - de-net
+    networks: [de-net]
+    restart: unless-stopped
 
   kafka:
     image: bitnami/kafka:3.7
-    depends_on:
-      - zookeeper
+    depends_on: [zookeeper]
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      # Internal listener for containers, external for host tools
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,EXTERNAL://:19092
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:19092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      # Keep it light
       - KAFKA_CFG_NUM_PARTITIONS=3
       - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
       - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
       - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
     ports:
-      - "19092:19092"   # Kafka for host clients
-    networks:
-      - de-net
+      - "19092:19092"
+    networks: [de-net]
+    restart: unless-stopped
 
   kafka-setup:
     image: bitnami/kafka:3.7
-    depends_on:
-      - kafka
-    entrypoint: ["/bin/bash", "-lc"]
+    depends_on: [kafka]
+    entrypoint: ["/bin/bash","-lc"]
     command: >
-      "
       until kafka-topics.sh --bootstrap-server kafka:9092 --list >/dev/null 2>&1; do sleep 1; done;
       kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic events.raw --partitions 3 --replication-factor 1;
       kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic events.dlq --partitions 3 --replication-factor 1;
-      "
-    networks:
-      - de-net
+    networks: [de-net]
     restart: "no"
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    depends_on:
-      - kafka
+    depends_on: [kafka]
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     ports:
       - "8080:8080"
-    networks:
-      - de-net
+    networks: [de-net]
+    restart: unless-stopped
 
-  # Spark standalone cluster (master + single worker)
   spark-master:
     image: bitnami/spark:3.5.1
     environment:
       SPARK_MODE: master
       SPARK_NO_DAEMONIZE: "true"
     ports:
-      - "7077:7077"   # Spark master RPC
-      - "8081:8080"   # Spark master UI -> http://localhost:8081
+      - "7077:7077"         # Spark master
+      - "8081:8080"         # Spark master UI -> http://localhost:8081
     volumes:
-      - ./streaming:/opt/streaming:rw
-      - ./data:/opt/data:rw
-    networks:
-      - de-net
+      - ./streaming:/opt/streaming:rw   # your PySpark jobs (main.py, gold.py, etc.)
+      - ./data:/opt/data:rw             # shared data lake (bronze/silver) + checkpoints
+    networks: [de-net]
+    restart: unless-stopped
 
   spark-worker:
     image: bitnami/spark:3.5.1
-    depends_on:
-      - spark-master
+    depends_on: [spark-master]
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
@@ -86,33 +76,47 @@ services:
       SPARK_WORKER_CORES: 2
       SPARK_NO_DAEMONIZE: "true"
     ports:
-      - "8082:8081"   # Spark worker UI -> http://localhost:8082
+      - "8082:8081"         # Spark worker UI -> http://localhost:8082
     volumes:
       - ./streaming:/opt/streaming:rw
       - ./data:/opt/data:rw
-    networks:
-      - de-net
+    networks: [de-net]
+    restart: unless-stopped
 
-  # Optional: Superset for a tiny dashboard
+  dbt:
+    build: ./dbt
+    working_dir: /usr/app
+    environment:
+      DBT_PROFILES_DIR: /usr/app   # so dbt reads profiles.yml from the project folder
+    volumes:
+      - ./dbt:/usr/app             # your dbt project + profiles.yml + warehouse.duckdb
+      - ./data:/opt/data           # where Spark wrote Parquet (silver layer)
+    networks: [de-net]
+    restart: unless-stopped
+
+
   superset:
     image: apache/superset:3.1.1
+    depends_on: [dbt]
     environment:
       SUPERSET_SECRET_KEY: "change_me_in_prod_please"
       SUPERSET_ENV: production
     volumes:
-      - ./superset:/app/superset_home
-      - ./data:/opt/data
+      - ./superset:/app/superset_home   # Superset metadata (SQLite)
+      - ./data:/opt/data                # optional: direct Parquet access if desired
+      - ./dbt:/opt/dbt                  # exposes /opt/dbt/warehouse.duckdb to Superset
     ports:
       - "8088:8088"
     command: >
       /bin/bash -lc "
+        pip install --no-cache-dir duckdb duckdb-engine &&
         superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin || true &&
         superset db upgrade &&
         superset init &&
-        gunicorn -w 2 -k gevent --timeout 300 --bind 0.0.0.0:8088 'superset.app:create_app()'
+        superset run -h 0.0.0.0 -p 8088
       "
-    networks:
-      - de-net
+    networks: [de-net]
+    restart: unless-stopped
 
 networks:
   de-net:

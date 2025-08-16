@@ -1,0 +1,9 @@
+ecomm:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /usr/app/warehouse.duckdb
+      schema: main
+      threads: 4
+      extensions: ['httpfs']

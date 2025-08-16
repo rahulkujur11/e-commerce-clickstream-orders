@@ -1,0 +1,9 @@
+version: 2
+models:
+  - name: daily_funnel
+  - name: fct_orders
+  - name: fct_order_items
+  - name: fct_cart_events
+  - name: fct_sessions
+  - name: fct_revenue_daily
+  - name: fct_revenue_by_category_daily
