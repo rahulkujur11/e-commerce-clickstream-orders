@@ -1,0 +1,5 @@
+v1
+{"path":"file:///opt/data/silver/add_to_cart/event_date=2025-08-17/part-00000-9725478e-d3f2-45c6-8114-2f16f616bb18.c000.snappy.parquet","size":2292,"isDir":false,"modificationTime":1755445093063,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/add_to_cart/event_date=2025-08-17/part-00001-06784558-87f5-47e4-8073-633e77d6d6aa.c000.snappy.parquet","size":2315,"isDir":false,"modificationTime":1755445093987,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/add_to_cart/event_date=2025-08-17/part-00002-fec83015-d4f0-465f-a739-8d37c384af0d.c000.snappy.parquet","size":2321,"isDir":false,"modificationTime":1755445093993,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/add_to_cart/event_date=2025-08-17/part-00003-98b983e2-3762-4d62-91a3-c916fddf6c56.c000.snappy.parquet","size":2394,"isDir":false,"modificationTime":1755445094249,"blockReplication":1,"blockSize":33554432,"action":"add"}

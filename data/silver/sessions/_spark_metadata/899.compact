@@ -1,0 +1,5 @@
+v1
+{"path":"file:///opt/data/silver/sessions/session_date=2025-08-16/part-00000-712aacfc-aabd-4453-bb94-cc520c940246.c000.snappy.parquet","size":7948,"isDir":false,"modificationTime":1755427083415,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/sessions/session_date=2025-08-16/part-00001-53292f1e-b1b1-4ec0-b947-00778096afdc.c000.snappy.parquet","size":7086,"isDir":false,"modificationTime":1755427083583,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/sessions/session_date=2025-08-16/part-00002-58d99828-eb01-49ee-8f86-61dec0561b19.c000.snappy.parquet","size":6647,"isDir":false,"modificationTime":1755427083861,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///opt/data/silver/sessions/session_date=2025-08-16/part-00003-cecee2fd-deda-4826-aeeb-cf48db8afe65.c000.snappy.parquet","size":7813,"isDir":false,"modificationTime":1755427083997,"blockReplication":1,"blockSize":33554432,"action":"add"}
