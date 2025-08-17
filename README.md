@@ -11,7 +11,7 @@ For dashboards, it ships with **Apache Superset** pre-configured.
 ```mermaid
 flowchart LR
   subgraph Generator["Event Generator"]
-    E1["event_gen.py\n(JSON clickstream + order events)"]
+    E1["event_gen.py (JSON clickstream + order events)"]
   end
 
   subgraph Kafka["Kafka Cluster"]
@@ -21,9 +21,9 @@ flowchart LR
 
   subgraph Spark["Spark Structured Streaming"]
     S1["Ingest from Kafka"]
-    S2["Bronze Writer\n(Raw Parquet)"]
-    S3["Silver Writer\n(Clean & Enriched Parquet)"]
-    S4["Gold Builder\n(Aggregations)"]
+    S2["Bronze Writer (Raw Parquet)"]
+    S3["Silver Writer (Clean & Enriched Parquet)"]
+    S4["Gold Builder (Aggregations)"]
   end
 
   subgraph Storage["Data Lake (local ./data/)"]
@@ -34,7 +34,7 @@ flowchart LR
 
   subgraph dbt["dbt + DuckDB"]
     D1["Staging Models"]
-    D2["Gold Models\nFacts & Dimensions"]
+    D2["Gold Models Facts & Dimensions"]
   end
 
   subgraph BI["Analytics"]
